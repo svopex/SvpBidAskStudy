@@ -1,0 +1,22 @@
+Zobrazovani vstupu na tickovem grafu.
+
+[xxx] - promenna, ktera lze nastavit 
+
+[Parameters By Stock] - optimalizovane parametry pro NQ a YM
+
+Hvezdicka se zobrazi pokud:
+===========================
+ask_volume > [Multiplikator Cross] * average(ask_volume, [MA]) 
+
+A ZAROVEN
+
+ask_volume > MinimumAsk
+kde MinimumAsk = [MultiplikatorMinimumAsk] * average(ask_volume, od pocatku dne) A ZAROVEN MinimumAsk musi byt vetsi nez [MinimumAsk].
+
+Subgraph:
+MinAsk - Minimalni hodnota asku, je to MinimumAsk vyse
+AverageAskVolume - Prumerne volume od zacatku dne, nezajimave
+Ask - proste ask volume
+AskAvr - [Multiplikator Cross] * average(ask_volume, [MA]) 
+MarkBarAsk - hvezdicka v pripade vujimecneho volume 
+Price - cena
