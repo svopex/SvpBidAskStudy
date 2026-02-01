@@ -1,4 +1,4 @@
-Ôªø#include "sierrachart.h"
+#include "sierrachart.h"
 #include <vector>
 
 SCDLLName("SvpBidAskStudy")
@@ -68,12 +68,12 @@ SCSFExport scsf_SvpBidAskStudy(SCStudyGraphRef sg)
     MarkBarAsk.Name = "MarkBarAsk";
     MarkBarAsk.DrawStyle = DRAWSTYLE_STAR;
     MarkBarAsk.PrimaryColor = RGB(255, 255, 255);
-    MarkBarAsk.LineWidth = 11;
+    MarkBarAsk.LineWidth = 12;
 
     MarkBarBid.Name = "MarkBarBid";
     MarkBarBid.DrawStyle = DRAWSTYLE_STAR;
     MarkBarBid.PrimaryColor = RGB(255, 255, 255);
-    MarkBarBid.LineWidth = 11;
+    MarkBarBid.LineWidth = 12;
 
     MinimumGraphAsk.Name = "MinAsk";
     MinimumGraphAsk.DrawStyle = DRAWSTYLE_HIDDEN;
@@ -159,27 +159,31 @@ SCSFExport scsf_SvpBidAskStudy(SCStudyGraphRef sg)
     float askLevel = AskMA_Internal[previousIndex] * MultiplikatorCross.IntValue;
     MarkBarAsk[sg.Index] = askLevel;
 
+    // Unik·tnÌ LineNumber per bar (ASK)
     int lineNumberAsk = 1000000 + sg.Index;
 
     s_UseTool Tool;
     Tool.Clear();
     Tool.ChartNumber = sg.ChartNumber;
-    Tool.DrawingType = DRAWING_TEXT;
-    Tool.Region = sg.GraphRegion;
+    Tool.DrawingType = DRAWING_TEXT; // kreslenÌ textu p¯es UseTool [web:1]
+    Tool.Region = REGION;
     Tool.AddMethod = UTAM_ADD_OR_ADJUST;
     Tool.LineNumber = lineNumberAsk;
 
-    Tool.BeginIndex = sg.Index + 3;          // mal√Ω posun doprava [web:1]
+    Tool.BeginIndex = sg.Index;
     Tool.BeginValue = askLevel;
 
     Tool.Color = RGB(255, 255, 255);
     Tool.FontSize = 10;
     Tool.FontBold = 1;
-    Tool.TransparentLabelBackground = 1;     // pr≈Øhledn√© pozad√≠ [web:29]
+    Tool.FontBackColor = RGB(0, 128, 0); // zelenÈ pozadÌ aù je to vidÏt
+    Tool.TransparentLabelBackground = 0;
 
-    Tool.Text.Format("%.0f", askLevel);      // bez "* "
+    // Text vedle hvÏzdy; klidnÏ zmÏÚ na "* 120" apod.
+    Tool.Text.Format("* %.0f", askLevel);
 
-    Tool.TextAlignment = DT_LEFT | DT_VCENTER;
+    // Posun doprava (aby to nebylo p¯es hvÏzdu) ñ ¯eöÌ se zarovn·nÌm
+    Tool.TextAlignment = DT_LEFT | DT_VCENTER; // alignment pro DRAWING_TEXT [web:1]
 
     sg.UseTool(Tool);
 
@@ -189,6 +193,8 @@ SCSFExport scsf_SvpBidAskStudy(SCStudyGraphRef sg)
   else
   {
     MarkBarAsk[sg.Index] = 0;
+    // Nic nemaûeme ñ aby historickÈ texty z˘staly.
+    // Pokud chceö mazat, musÌö mazat konkrÈtnÌ lineNumberAsk pro dan˝ bar.
   }
 
   // --- BID SIGNAL + TEXT ---
@@ -200,27 +206,28 @@ SCSFExport scsf_SvpBidAskStudy(SCStudyGraphRef sg)
     float bidLevel = -BidMA_Internal[previousIndex] * MultiplikatorCross.IntValue;
     MarkBarBid[sg.Index] = bidLevel;
 
+    // Unik·tnÌ LineNumber per bar (BID)
     int lineNumberBid = 2000000 + sg.Index;
 
     s_UseTool Tool;
     Tool.Clear();
     Tool.ChartNumber = sg.ChartNumber;
-    Tool.DrawingType = DRAWING_TEXT;
-    Tool.Region = sg.GraphRegion;
+    Tool.DrawingType = DRAWING_TEXT; // kreslenÌ textu p¯es UseTool [web:1]
+    Tool.Region = REGION;
     Tool.AddMethod = UTAM_ADD_OR_ADJUST;
     Tool.LineNumber = lineNumberBid;
 
-    Tool.BeginIndex = sg.Index + 3;
+    Tool.BeginIndex = sg.Index;
     Tool.BeginValue = bidLevel;
 
     Tool.Color = RGB(255, 255, 255);
     Tool.FontSize = 10;
     Tool.FontBold = 1;
-    Tool.TransparentLabelBackground = 1;     // pr≈Øhledn√© pozad√≠ [web:29]
+    Tool.FontBackColor = RGB(128, 0, 0); // ËervenÈ pozadÌ
+    Tool.TransparentLabelBackground = 0;
 
-    Tool.Text.Format("%.0f", fabs(bidLevel)); // bid text bez m√≠nusu
-
-    Tool.TextAlignment = DT_LEFT | DT_VCENTER;
+    Tool.Text.Format("* %.0f", bidLevel);
+    Tool.TextAlignment = DT_LEFT | DT_VCENTER; // alignment pro DRAWING_TEXT [web:1]
 
     sg.UseTool(Tool);
 
