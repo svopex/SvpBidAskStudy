@@ -31,15 +31,15 @@ SCSFExport scsf_SvpBidAskStudy(SCStudyGraphRef sg)
     MultiplikatorCross.Name = "Multiplicator Cross";
     MA.SetInt(360);
     MA.Name = "MA";
-    MinimumInputRefAsk.SetInt(100);
+    MinimumInputRefAsk.SetInt(80);
     MinimumInputRefAsk.Name = "Minimum Ask";
-    MinimumInputRefBid.SetInt(100);
+    MinimumInputRefBid.SetInt(80);
     MinimumInputRefBid.Name = "Minimum Bid";
     PlaySoundWhenSignal.SetYesNo(true);
     PlaySoundWhenSignal.Name = "Play Sound When Signal";
     AlertSoundNumber.SetInt(1);
     AlertSoundNumber.Name = "Alert Sound Number";
-    Stock.SetCustomInputStrings("By params;NQ;YM");
+    Stock.SetCustomInputStrings("By params;NQ;YM;RTY");
     Stock.SetCustomInputIndex(0);
     Stock.Name = "Parameters By Stock";
 
@@ -100,16 +100,23 @@ SCSFExport scsf_SvpBidAskStudy(SCStudyGraphRef sg)
   if (Stock.GetIndex() == 1)
   {
     // NQ
-    MultiplikatorCross.SetInt(10);
-    MinimumInputRefAsk.SetInt(100);
-    MinimumInputRefBid.SetInt(100);
+    MultiplikatorCross.SetInt(20);
+    MinimumInputRefAsk.SetInt(80);
+    MinimumInputRefBid.SetInt(80);
   }
   if (Stock.GetIndex() == 2)
   {
     // YM
-    MultiplikatorCross.SetInt(5);
+    MultiplikatorCross.SetInt(20);
     MinimumInputRefAsk.SetInt(50);
     MinimumInputRefBid.SetInt(50);
+  }
+  if (Stock.GetIndex() == 3)
+  {
+    // RTY
+    MultiplikatorCross.SetInt(20);
+    MinimumInputRefAsk.SetInt(60);
+    MinimumInputRefBid.SetInt(60);
   }
 
   SCDateTime DayStartDateTime = sg.GetTradingDayStartDateTimeOfBar(sg.BaseDateTimeIn[sg.Index]);
@@ -177,7 +184,7 @@ SCSFExport scsf_SvpBidAskStudy(SCStudyGraphRef sg)
     Tool.FontBold = 1;
     Tool.TransparentLabelBackground = 1;     // průhledné pozadí [web:29]
 
-    Tool.Text.Format("%.0f", askLevel);      // bez "* "
+    Tool.Text.Format("%.0f", (float)sg.BaseDataIn[SC_ASKVOL][sg.Index]);
 
     Tool.TextAlignment = DT_LEFT | DT_VCENTER;
 
@@ -218,7 +225,7 @@ SCSFExport scsf_SvpBidAskStudy(SCStudyGraphRef sg)
     Tool.FontBold = 1;
     Tool.TransparentLabelBackground = 1;     // průhledné pozadí [web:29]
 
-    Tool.Text.Format("%.0f", fabs(bidLevel)); // bid text bez mínusu
+    Tool.Text.Format("%.0f", (float)sg.BaseDataIn[SC_BIDVOL][sg.Index]);
 
     Tool.TextAlignment = DT_LEFT | DT_VCENTER;
 
